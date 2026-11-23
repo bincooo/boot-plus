@@ -1,0 +1,48 @@
+# H2 内存库（默认 profile）：启动时自动执行 schema/data 初始化
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: org.h2.Driver
+        druid:
+            # 主库数据源（H2 内存库，MySQL 兼容模式）
+            master:
+                url: jdbc:h2:mem:bootplus;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+                username: sa
+                password:
+            # 从库数据源
+            slave:
+                # 从数据源开关/默认关闭
+                enabled: false
+                url:
+                username:
+                password:
+            # 初始连接数
+            initialSize: 1
+            # 最小连接池数量
+            minIdle: 1
+            # 最大连接池数量
+            maxActive: 20
+            # 配置获取连接等待超时的时间
+            maxWait: 60000
+            # 配置连接超时时间
+            connectTimeout: 30000
+            # 配置网络超时时间
+            socketTimeout: 60000
+            # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+            timeBetweenEvictionRunsMillis: 60000
+            # 配置一个连接在池中最小生存的时间，单位是毫秒
+            minEvictableIdleTimeMillis: 300000
+            # 配置一个连接在池中最大生存的时间，单位是毫秒
+            maxEvictableIdleTimeMillis: 900000
+            # 配置检测连接是否有效
+            validationQuery: SELECT 1
+            testWhileIdle: true
+            testOnBorrow: false
+            testOnReturn: false
+    sql:
+        init:
+            # 每次启动都执行初始化脚本（仅 H2 内存库 profile）
+            mode: always
+            schema-locations: classpath:db/h2/schema.sql
+            data-locations: classpath:db/h2/data.sql
+            continue-on-error: false
